@@ -19,3 +19,17 @@
 '''
 
 ip = '192.168.3.1'
+
+#'{:08b} {:08b} {:08b} {:08b}'.format(192, 100, 1, 1)
+#tmp = '{:<8}' * 4 + '\n' + '{:08b}' * 4
+#print(tmp)
+ip_tmp = '''
+{0:<8}  {1:<8}  {2:<8}  {3:<8}
+{0:08b}  {1:08b}  {2:08b}  {3:08b}
+'''
+ip_s = ip.split('.')
+#print(ip_s)
+ip_n = [int(oct) for oct in ip_s]
+#print(ip_n)
+
+print(ip_tmp.format(ip_n[0], ip_n[1], ip_n[2], ip_n[3]))
