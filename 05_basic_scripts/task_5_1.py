@@ -46,3 +46,6 @@ london_co = {
         'routing': True
     }
 }
+
+name = input('Insert router name: ')
+print(london_co[name])

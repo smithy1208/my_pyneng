@@ -45,3 +45,8 @@ london_co = {
         'routing': True
     }
 }
+
+name = input('Insert device name: ')
+in_temp = 'Insert parametr ({}): '.format(', '.join(list(london_co[name].keys())))
+parametr = input(in_temp)
+print(london_co[name][parametr])
