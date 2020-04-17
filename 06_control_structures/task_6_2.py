@@ -14,3 +14,21 @@
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
+
+user_ip = input('Enter IP address: ')
+#user_ip = '10.0.1.1'
+
+ip = user_ip.split('.')
+ip = [int(oct) for oct in ip]
+print(ip)
+first_bite = ip[0]
+if first_bite >=1 and first_bite <= 223:
+    print('unicast')
+elif first_bite >= 224 and first_bite <= 239:
+    print('multicast')
+elif user_ip == '255.255.255.255':
+    print('local broadcast')
+elif user_ip == '0.0.0.0':
+    print('unassigned')
+else:
+    print('unused')
