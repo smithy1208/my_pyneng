@@ -23,6 +23,7 @@
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
+from pprint import pprint
 
 def get_int_vlan_map(config_filename):
     mode_access = {}
@@ -44,5 +45,4 @@ def get_int_vlan_map(config_filename):
 
     return (mode_access, mode_trunk)
 
-from pprint import pprint
 pprint(get_int_vlan_map('config_sw2.txt'))

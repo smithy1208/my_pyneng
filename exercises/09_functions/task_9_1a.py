@@ -40,6 +40,7 @@ access_config = {
     'FastEthernet0/16': 17
 }
 
+from pprint import pprint
 
 def generate_access_config(intf_vlan_mapping, access_template, psecurity=None):
     '''
@@ -64,6 +65,5 @@ def generate_access_config(intf_vlan_mapping, access_template, psecurity=None):
                 result.append(command)
     return result
 
-from pprint import pprint
 pprint(generate_access_config(access_config, access_mode_template))
 pprint(generate_access_config(access_config, access_mode_template, port_security_template))

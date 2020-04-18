@@ -19,6 +19,7 @@
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
+from pprint import pprint
 
 ignore = ['duplex', 'alias', 'Current configuration']
 
@@ -53,5 +54,4 @@ def convert_config_to_dict(config_filename):
 
     return result
 
-from pprint import pprint
 pprint(convert_config_to_dict('config_sw1.txt'))
