@@ -38,5 +38,5 @@ with open(srcfile) as src:
 
 result.sort()
 for lst in result:
-    vlan, mac, intf = lst
-    print(my_template.format(vlan, mac, intf))
+    #vlan, mac, intf = lst
+    print(my_template.format(*lst))

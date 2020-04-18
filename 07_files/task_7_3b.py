@@ -31,5 +31,5 @@ with open(srcfile) as src:
 user_vlanid = int(input('Enter vlanid: '))
 user_result = [lst for lst in result if lst[0] == user_vlanid]
 for item in user_result:
-    vlan, mac, intf = item
-    print(my_template.format(vlan, mac, intf))
+    #vlan, mac, intf = item
+    print(my_template.format(*item))
