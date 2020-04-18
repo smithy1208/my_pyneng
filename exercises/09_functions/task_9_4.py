@@ -35,3 +35,23 @@ def ignore_command(command, ignore):
     * False - если нет
     '''
     return any(word in command for word in ignore)
+
+def convert_config_to_dict(config_filename):
+    result = {}
+    with open(config_filename) as f:
+        for line in f:
+            if (not line.rstrip()) or line.startswith('!') or ignore_command(line, ignore):
+                #пустая строка, или начинается с '!', или команда должна быть проигнорирована
+                pass
+            else:
+                if not line.startswith(' '):    # Если строка не начинается с пробела
+                    parent_command = line.rstrip()
+                    result[parent_command] = []
+                else:                           # Строка начинается с пробела
+                    child_command = line.strip()
+                    result[parent_command].append(child_command)
+
+    return result
+
+from pprint import pprint
+pprint(convert_config_to_dict('config_sw1.txt'))
