@@ -12,3 +12,12 @@
 
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
+
+from sys import argv
+
+conffile = argv[1]
+
+with open(conffile) as f:
+    for line in f:
+        if not '!' in line:
+            print(line.rstrip())

@@ -14,3 +14,24 @@ Outbound Interface:    FastEthernet0/0
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 
 '''
+
+my_output = '''{:<24} {:<}
+{:<24} {:<}
+{:<24} {:<}
+{:<24} {:<}
+{:<24} {:<}
+{:<24} {:<}
+'''
+
+with open('ospf.txt') as f:
+    for ospf_route in f:
+        route_list = [item.strip('[],') for item in ospf_route.split()]
+        _, prefix, metric, _, next_hop, update, intf = route_list
+        print(my_output.format(
+            'Protocol:', 'OSPF',
+            'Prefix:', prefix,
+            'AD/Metric:', metric,
+            'Next-Hop:', next_hop,
+            'Last update:', update,
+            'Outbound Interface:', intf
+        ))

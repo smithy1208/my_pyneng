@@ -16,4 +16,18 @@
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 '''
 
-ignore = ['duplex', 'alias', 'Current configuration']
+ignore = ['duplex', 'alias', 'Current configuration', '!']
+
+from sys import argv
+
+conffile = argv[1]
+dstfile = argv[2]
+
+with open(conffile) as src, open(dstfile, 'w') as dst:
+    for line in src:
+        ign_ok = True # В строке нет слова из списка ignore
+        for ign in ignore:
+            if ign in line:
+                ign_ok = False
+        if ign_ok:
+            dst.write(line)

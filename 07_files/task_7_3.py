@@ -17,3 +17,12 @@
 Ограничение: Все задания надо выполнять используя только пройденные темы.
 
 '''
+my_template = '{:<7}{:<18}{:<8}'
+
+srcfile = 'CAM_table.txt'
+
+with open(srcfile) as src:
+    for line in src:
+        if line.split() and line.split()[0].isdigit():
+            vlan, mac, _, intf = line.split()
+            print(my_template.format(vlan, mac, intf))
