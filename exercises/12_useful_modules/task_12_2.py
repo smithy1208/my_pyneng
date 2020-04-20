@@ -31,3 +31,62 @@
 
 '''
 
+from pprint import pprint
+import ipaddress
+from task_12_1 import check_ip
+
+def convert_ranges_to_ip_list(ip_address_list):
+    '''
+    Функция convert_ranges_to_ip_list конвертирует список IP-адресов в разных форматах в список, где каждый IP-адрес указан отдельно.
+
+    Функция ожидает как аргумент список IP-адресов и/или диапазонов IP-адресов.
+
+    Элементы списка могут быть в формате:
+    * 10.1.1.1
+    * 10.1.1.1-10.1.1.10
+    * 10.1.1.1-10
+
+    Если адрес указан в виде диапазона, надо развернуть диапазон в отдельные адреса, включая последний адрес диапазона.
+    Для упрощения задачи, можно считать, что в диапазоне всегда меняется только последний октет адреса.
+
+    Функция возвращает список IP-адресов.
+    :param ip_address:
+    :return:
+    '''
+    result = []
+
+    for item in ip_address_list:
+        if item.count('-') == 1:
+            start_ip, last = item.split('-')
+            if check_ip(start_ip):
+
+                if last.isdigit():
+                    octs = start_ip.split('.')[:-1]
+                    octs.append(str(last))
+                    last = '.'.join(octs)
+
+                elif not check_ip(last):
+                    print(f'Bad ip address: {last}')
+                    continue
+
+                next_ip = ipaddress.ip_address(start_ip)
+                while next_ip <= ipaddress.ip_address(last):
+                    result.append(str(next_ip))
+                    next_ip += 1
+
+            else:
+                print(f'Bad ip address: {start_ip}')
+
+
+
+        else:
+            if check_ip(item):
+                result.append(item)
+            else:
+                print(f'Bad ip address: {item}')
+
+    return result
+
+if __name__ == '__main__':
+    test_ip_addr_list = ['8.8.4.4', '1.1.1.22-25', '172.21.41.128-172.21.41.132']
+    pprint(convert_ranges_to_ip_list(test_ip_addr_list))
