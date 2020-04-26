@@ -22,3 +22,36 @@
 диапазоны адресов и так далее, так как обрабатывается вывод команды, а не ввод пользователя.
 
 '''
+import re
+from pprint import pprint
+
+def get_ip_from_cfg(filecfg):
+    '''
+    Функция должна обрабатывать конфигурацию и возвращать IP-адреса и маски,
+    которые настроены на интерфейсах, в виде списка кортежей:
+    * первый элемент кортежа - IP-адрес
+    * второй элемент кортежа - маска
+
+    Например (взяты произвольные адреса):
+    [('10.0.1.1', '255.255.255.0'), ('10.0.2.1', '255.255.255.0')]
+    :param filecfg:
+    :return:
+    '''
+    result = []
+
+    regex = re.compile(r' ip address (\S+) (\S+)')
+
+    with open(filecfg) as f:
+        for line in f:
+            match = regex.match(line)
+            if match:
+                result.append(match.groups())
+
+
+    return result
+
+if __name__ == '__main__':
+    cfg = 'config_r1.txt'
+
+    pprint(get_ip_from_cfg(cfg))
+
