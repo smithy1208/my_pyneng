@@ -31,14 +31,8 @@ from task_15_2 import parse_sh_ip_int_br
 headers = ['interface', 'address', 'status', 'protocol']
 
 def convert_to_dict(head, parse_result):
-
-
-    #for item in parse_result:
-        #print(dict(zip(head, item)))
-
     return [dict(zip(head, item)) for item in parse_result]
 
 if __name__ == '__main__':
     out = 'sh_ip_int_br.txt'
-
     pprint(convert_to_dict(headers, parse_sh_ip_int_br(out)))
