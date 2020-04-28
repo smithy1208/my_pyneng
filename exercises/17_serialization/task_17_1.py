@@ -40,8 +40,55 @@
 '''
 
 import glob
+import re
+import csv
 
-sh_version_files = glob.glob('sh_vers*')
-#print(sh_version_files)
+def parse_sh_version(sh_ver):
+    '''
+    return (ios, image, uptime)
+    '''
 
-headers = ['hostname', 'ios', 'image', 'uptime']
+    #Cisco IOS Software, 1841 Software (C1841-ADVIPSERVICESK9-M), Version 12.4(15)T1, RELEASE SOFTWARE (fc2)
+    regex = (r'Cisco IOS.+?, Version (?P<ios>\S+),.+' 
+            r'router uptime is (?P<uptime>(?:\d+ \S+ ?){3}).+' 
+            r'System image file is "(?P<image>\S+)"')
+
+    match = re.search(regex, sh_ver, re.DOTALL)
+    if match:
+        return match.group('ios', 'image', 'uptime')
+
+def write_inventory_to_csv(data_filenames, csv_filename):
+    '''
+    У функции write_inventory_to_csv должно быть два параметра:
+     * data_filenames - ожидает как аргумент список имен файлов с выводом sh version
+     * csv_filename - ожидает как аргумент имя файла (например, routers_inventory.csv), в который будет записана информация в формате CSV
+    * функция записывает содержимое в файл, в формате CSV и ничего не возвращает
+    '''
+
+    with open(csv_filename, 'w') as dst:
+        writer = csv.writer(dst)
+        writer.writerow(headers)
+
+
+        for sh_ver_file in data_filenames:
+            hostname = re.search(r'.*_(\w+)\.\w+$', sh_ver_file).group(1)
+            with open(sh_ver_file) as src:
+                lst = list(parse_sh_version(src.read()))
+                # print(lst)
+                lst.insert(0, hostname)
+                # print(lst)
+                writer.writerow(lst)
+
+
+
+if __name__ == '__main__':
+
+    sh_version_files = glob.glob('sh_vers*')
+    #print(sh_version_files)
+
+    headers = ['hostname', 'ios', 'image', 'uptime']
+
+    # for out in sh_version_files:
+    #     with open(out) as f:
+    #         print(parse_sh_version(f.read()))
+    write_inventory_to_csv(sh_version_files, 'routers_inventory.csv')
