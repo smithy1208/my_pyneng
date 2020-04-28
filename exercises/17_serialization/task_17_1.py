@@ -28,3 +28,30 @@ sw3,00:E9:22:11:A6:50,100.1.1.7,3,FastEthernet0/21
 Первый столбец в csv файле имя коммутатора надо получить из имени файла, остальные - из содержимого в файлах.
 
 """
+
+import csv
+import re
+
+def write_dhcp_snooping_to_csv(filenames, output):
+
+    regex = re.compile(r'(\S+) +(\S+) +\d+ +\S+ +(\d+) +(\S+)')
+
+    with open(output, 'w') as dst:
+        writer = csv.writer(dst)
+        writer.writerow(['switch','mac','ip','vlan','interface'])
+        for file in filenames:
+            hostname = re.match(r'(\w+?)_.*', file).group(1)
+
+            with open(file) as f:
+                for line in f:
+                    match = regex.match(line)
+                    if match:
+                        m_lst = list(match.groups())
+                        m_lst.insert(0, hostname)
+                        writer.writerow(m_lst)
+
+
+
+if __name__ == '__main__':
+    files = ['sw1_dhcp_snooping.txt', 'sw2_dhcp_snooping.txt', 'sw3_dhcp_snooping.txt']
+    write_dhcp_snooping_to_csv(files, 'dhcp_snoop.csv')
