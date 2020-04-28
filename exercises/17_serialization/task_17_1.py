@@ -64,7 +64,7 @@ def write_inventory_to_csv(data_filenames, csv_filename):
      * csv_filename - ожидает как аргумент имя файла (например, routers_inventory.csv), в который будет записана информация в формате CSV
     * функция записывает содержимое в файл, в формате CSV и ничего не возвращает
     '''
-
+    headers = ['hostname', 'ios', 'image', 'uptime']
     with open(csv_filename, 'w') as dst:
         writer = csv.writer(dst)
         writer.writerow(headers)
