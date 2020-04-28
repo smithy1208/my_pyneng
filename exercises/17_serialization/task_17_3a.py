@@ -32,3 +32,33 @@
 Проверить работу параметра save_to_filename и записать итоговый словарь в файл topology.yaml.
 
 """
+import glob
+import yaml
+from pprint import pprint
+from task_17_3 import parse_sh_cdp_neighbors
+
+def generate_topology_from_cdp(list_of_files, save_to_filename=None):
+    '''
+    Функция generate_topology_from_cdp должна быть создана с параметрами:
+    * list_of_files - список файлов из которых надо считать вывод команды sh cdp neighbor
+    * save_to_filename - имя файла в формате YAML, в который сохранится топология.
+     * значение по умолчанию - None. По умолчанию, топология не сохраняется в файл
+     * топология сохраняется только, если save_to_filename как аргумент указано имя файла
+    '''
+
+    result = {}
+
+    for file in list_of_files:
+        with open(file) as f:
+            result.update(parse_sh_cdp_neighbors(f.read()))
+
+    if save_to_filename:
+        with open(save_to_filename, 'w') as dst:
+            yaml.dump(result, dst)
+
+    return result
+
+if __name__ == '__main__':
+    sh_cdp_n_files = glob.glob('sh_cdp_n_*')
+    # pprint(generate_topology_from_cdp(sh_cdp_n_files))
+    generate_topology_from_cdp(sh_cdp_n_files, 'topology.yml')
