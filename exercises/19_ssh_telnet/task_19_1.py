@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Задание 19.1
 
 Создать функцию send_show_command.
@@ -14,6 +14,6 @@
 
 Скрипт должен отправлять команду command на все устройства из файла devices.yaml с помощью функции send_show_command.
 
-'''
+"""
 
-command = 'sh ip int br'
+command = "sh ip int br"

@@ -1,94 +1,30 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Задание 17.1
 
-В этом задании нужно:
-* взять содержимое нескольких файлов с выводом команды sh version
-* распарсить вывод команды с помощью регулярных выражений и получить информацию об устройстве
-* записать полученную информацию в файл в CSV формате
+Создать функцию write_dhcp_snooping_to_csv, которая обрабатывает
+вывод команды show dhcp snooping binding из разных файлов и записывает обработанные данные в csv файл.
 
-Для выполнения задания нужно создать две функции.
+Аргументы функции:
+* filenames - список с именами файлов с выводом show dhcp snooping binding
+* output - имя файла в формате csv, в который будет записан результат
 
-Функция parse_sh_version:
-* ожидает как аргумент вывод команды sh version одной строкой (не имя файла)
-* обрабатывает вывод, с помощью регулярных выражений
-* возвращает кортеж из трёх элементов:
- * ios - в формате "12.4(5)T"
- * image - в формате "flash:c2800-advipservicesk9-mz.124-5.T.bin"
- * uptime - в формате "5 days, 3 hours, 3 minutes"
+Функция ничего не возвращает.
 
-У функции write_inventory_to_csv должно быть два параметра:
- * data_filenames - ожидает как аргумент список имен файлов с выводом sh version
- * csv_filename - ожидает как аргумент имя файла (например, routers_inventory.csv), в который будет записана информация в формате CSV
-* функция записывает содержимое в файл, в формате CSV и ничего не возвращает
+Например, если как аргумент был передан список с одним файлом sw3_dhcp_snooping.txt:
+MacAddress          IpAddress        Lease(sec)  Type           VLAN  Interface
+------------------  ---------------  ----------  -------------  ----  --------------------
+00:E9:BC:3F:A6:50   100.1.1.6        76260       dhcp-snooping   3    FastEthernet0/20
+00:E9:22:11:A6:50   100.1.1.7        76260       dhcp-snooping   3    FastEthernet0/21
+Total number of bindings: 2
 
-
-Функция write_inventory_to_csv должна делать следующее:
-* обработать информацию из каждого файла с выводом sh version:
- * sh_version_r1.txt, sh_version_r2.txt, sh_version_r3.txt
-* с помощью функции parse_sh_version, из каждого вывода должна быть получена информация ios, image, uptime
-* из имени файла нужно получить имя хоста
-* после этого вся информация должна быть записана в CSV файл
-
-В файле routers_inventory.csv должны быть такие столбцы:
-* hostname, ios, image, uptime
-
-В скрипте, с помощью модуля glob, создан список файлов, имя которых начинается на sh_vers.
-Вы можете раскомментировать строку print(sh_version_files), чтобы посмотреть содержимое списка.
-
-Кроме того, создан список заголовков (headers), который должен быть записан в CSV.
-'''
-
-import glob
-import re
-import csv
-
-def parse_sh_version(sh_ver):
-    '''
-    return (ios, image, uptime)
-    '''
-
-    #Cisco IOS Software, 1841 Software (C1841-ADVIPSERVICESK9-M), Version 12.4(15)T1, RELEASE SOFTWARE (fc2)
-    regex = (r'Cisco IOS.+?, Version (?P<ios>\S+),.+' 
-            r'router uptime is (?P<uptime>(?:\d+ \S+ ?){3}).+' 
-            r'System image file is "(?P<image>\S+)"')
-
-    match = re.search(regex, sh_ver, re.DOTALL)
-    if match:
-        return match.group('ios', 'image', 'uptime')
-
-def write_inventory_to_csv(data_filenames, csv_filename):
-    '''
-    У функции write_inventory_to_csv должно быть два параметра:
-     * data_filenames - ожидает как аргумент список имен файлов с выводом sh version
-     * csv_filename - ожидает как аргумент имя файла (например, routers_inventory.csv), в который будет записана информация в формате CSV
-    * функция записывает содержимое в файл, в формате CSV и ничего не возвращает
-    '''
-    headers = ['hostname', 'ios', 'image', 'uptime']
-    with open(csv_filename, 'w') as dst:
-        writer = csv.writer(dst)
-        writer.writerow(headers)
+В итоговом csv файле должно быть такое содержимое:
+switch,mac,ip,vlan,interface
+sw3,00:E9:BC:3F:A6:50,100.1.1.6,3,FastEthernet0/20
+sw3,00:E9:22:11:A6:50,100.1.1.7,3,FastEthernet0/21
 
 
-        for sh_ver_file in data_filenames:
-            hostname = re.search(r'.*_(\w+)\.\w+$', sh_ver_file).group(1)
-            with open(sh_ver_file) as src:
-                lst = list(parse_sh_version(src.read()))
-                # print(lst)
-                lst.insert(0, hostname)
-                # print(lst)
-                writer.writerow(lst)
+Проверить работу функции на содержимом файлов sw1_dhcp_snooping.txt, sw2_dhcp_snooping.txt, sw3_dhcp_snooping.txt.
+Первый столбец в csv файле имя коммутатора надо получить из имени файла, остальные - из содержимого в файлах.
 
-
-
-if __name__ == '__main__':
-
-    sh_version_files = glob.glob('sh_vers*')
-    #print(sh_version_files)
-
-    headers = ['hostname', 'ios', 'image', 'uptime']
-
-    # for out in sh_version_files:
-    #     with open(out) as f:
-    #         print(parse_sh_version(f.read()))
-    write_inventory_to_csv(sh_version_files, 'routers_inventory.csv')
+"""

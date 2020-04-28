@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Задание 19.2
 
 Создать функцию send_config_commands
@@ -39,8 +39,6 @@ R1#
 
 
 Скрипт должен отправлять команду command на все устройства из файла devices.yaml с помощью функции send_config_commands.
-'''
+"""
 
-commands = [
-    'logging 10.255.255.1', 'logging buffered 20010', 'no logging console'
-]
+commands = ["logging 10.255.255.1", "logging buffered 20010", "no logging console"]

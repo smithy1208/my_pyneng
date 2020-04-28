@@ -1,54 +1,47 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Задание 17.2
 
-Создать функцию parse_sh_cdp_neighbors, которая обрабатывает
-вывод команды show cdp neighbors.
+В этом задании нужно:
+* взять содержимое нескольких файлов с выводом команды sh version
+* распарсить вывод команды с помощью регулярных выражений и получить информацию об устройстве
+* записать полученную информацию в файл в CSV формате
 
-Функция ожидает, как аргумент, вывод команды одной строкой (не имя файла).
-Функция должна возвращать словарь, который описывает соединения между устройствами.
+Для выполнения задания нужно создать две функции.
 
-Например, если как аргумент был передан такой вывод:
-R4>show cdp neighbors
+Функция parse_sh_version:
+* ожидает как аргумент вывод команды sh version одной строкой (не имя файла)
+* обрабатывает вывод, с помощью регулярных выражений
+* возвращает кортеж из трёх элементов:
+ * ios - в формате "12.4(5)T"
+ * image - в формате "flash:c2800-advipservicesk9-mz.124-5.T.bin"
+ * uptime - в формате "5 days, 3 hours, 3 minutes"
 
-Device ID    Local Intrfce   Holdtme     Capability       Platform    Port ID
-R5           Fa 0/1          122           R S I           2811       Fa 0/1
-R6           Fa 0/2          143           R S I           2811       Fa 0/0
-
-Функция должна вернуть такой словарь:
-{'R4': {'Fa 0/1': {'R5': 'Fa 0/1'},
-        'Fa 0/2': {'R6': 'Fa 0/0'}}}
-
-Интерфейсы должны быть записаны с пробелом. То есть, так Fa 0/0, а не так Fa0/0.
+У функции write_inventory_to_csv должно быть два параметра:
+ * data_filenames - ожидает как аргумент список имен файлов с выводом sh version
+ * csv_filename - ожидает как аргумент имя файла (например, routers_inventory.csv), в который будет записана информация в формате CSV
+* функция записывает содержимое в файл, в формате CSV и ничего не возвращает
 
 
-Проверить работу функции на содержимом файла sh_cdp_n_sw1.txt
-'''
-import re
-from pprint import pprint
+Функция write_inventory_to_csv должна делать следующее:
+* обработать информацию из каждого файла с выводом sh version:
+ * sh_version_r1.txt, sh_version_r2.txt, sh_version_r3.txt
+* с помощью функции parse_sh_version, из каждого вывода должна быть получена информация ios, image, uptime
+* из имени файла нужно получить имя хоста
+* после этого вся информация должна быть записана в CSV файл
 
-def parse_sh_cdp_neighbors(sh_cdp):
-    '''
-    Функция ожидает, как аргумент, вывод команды одной строкой (не имя файла).
-    Функция должна возвращать словарь, который описывает соединения между устройствами.
-    '''
-    result = {}
-    host = re.match(r'\n?(\w+)[>#]', sh_cdp).group(1)
-    regex = r'\n(?P<neighbour>\S+)\s+(?P<local_intf>\S+ \S+)\s+\d+.+\s(?P<neigh_intf>\S+ \S+)'
-    match_dict = [match.groupdict() for match in re.finditer(regex, sh_cdp)]
+В файле routers_inventory.csv должны быть такие столбцы:
+* hostname, ios, image, uptime
 
-    intf_dict = {}
-    for item in match_dict:
-        neigh = {}
-        neigh[item['neighbour']] = item['neigh_intf']
-        local_intf = {}
-        intf_dict[item['local_intf']] = neigh
+В скрипте, с помощью модуля glob, создан список файлов, имя которых начинается на sh_vers.
+Вы можете раскомментировать строку print(sh_version_files), чтобы посмотреть содержимое списка.
 
-    result[host] = intf_dict
+Кроме того, создан список заголовков (headers), который должен быть записан в CSV.
+"""
 
-    return result
+import glob
 
-if __name__ == '__main__':
-    cdp_file = 'sh_cdp_n_sw1.txt'
-    with open(cdp_file) as f:
-        pprint(parse_sh_cdp_neighbors(f.read()))
+sh_version_files = glob.glob("sh_vers*")
+# print(sh_version_files)
+
+headers = ["hostname", "ios", "image", "uptime"]

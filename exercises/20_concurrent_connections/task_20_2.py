@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Задание 20.2
 
 Создать функцию send_show_command_to_devices, которая отправляет
@@ -32,4 +32,4 @@ Ethernet0/1                unassigned      YES NVRAM  administratively down down
 Для выполнения задания можно создавать любые дополнительные функции.
 
 Проверить работу функции на устройствах из файла devices.yaml
-'''
+"""

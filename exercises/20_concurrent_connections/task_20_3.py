@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 Задание 20.3
 
 Создать функцию send_command_to_devices, которая отправляет
@@ -34,9 +34,10 @@ Ethernet0/1                unassigned      YES NVRAM  administratively down down
 Для выполнения задания можно создавать любые дополнительные функции.
 
 Проверить работу функции на устройствах из файла devices.yaml и словаре commands
-'''
+"""
 
-commands = {'192.168.100.1': 'sh ip int br',
-            '192.168.100.2': 'sh arp',
-            '192.168.100.3': 'sh ip int br'}
-
+commands = {
+    "192.168.100.1": "sh ip int br",
+    "192.168.100.2": "sh arp",
+    "192.168.100.3": "sh ip int br",
+}

@@ -6,4 +6,4 @@ Value MonthDay (\d+)
 Value Year (\d+)
 
 Start
-  ^${Time}.* ${Timezone} ${WeekDay} ${Month} ${MonthDay} ${Year} -> Record
+  ^\*${Time}.* ${Timezone} ${WeekDay} ${Month} ${MonthDay} ${Year} -> Record

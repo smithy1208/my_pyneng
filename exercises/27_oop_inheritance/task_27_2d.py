@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-'''
+"""
 Задание 27.2d
 
 Дополнить класс MyNetmiko из задания 27.2c или задания 27.2b.
@@ -31,4 +31,4 @@ ErrorInCommand                            Traceback (most recent call last)
 
 ...
 ErrorInCommand: При выполнении команды "lo" на устройстве 192.168.100.1 возникла ошибка "Incomplete command."
-'''
+"""
