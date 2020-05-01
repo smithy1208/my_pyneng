@@ -17,6 +17,7 @@ import os.path
 import yaml
 import re
 import glob
+from tabulate import tabulate
 
 def add_swithces(db_file, switches_file_yml):
     '''
@@ -40,52 +41,77 @@ def add_swithces(db_file, switches_file_yml):
 
     conn.close()
 
-def add_dhcp_data(db_file, dhch_snoop_filelist):
+def parse_dhcp_snoop_files(dhcp_snoop_filelist):
     regex = re.compile('(\S+) +(\S+) +\d+ +\S+ +(\d+) +(\S+)')
-
     result = []
-
-    for file in dhch_snoop_filelist:
-        switch = re.match(r'(\w+?)_.*', file).group(1)
-        #print(host)
+    for file in dhcp_snoop_filelist:
+        switch = re.match(r'.+/(\w+?)_.*', file).group(1)
         with open(file) as f:
             for line in f:
                 match = regex.match(line)
                 if match:
                     row = list(match.groups())
                     row.append(switch)
+                    row.append(1)
                     result.append(tuple(row))
-    #print(result)
+    return result
 
-
-    query = '''insert into dhcp (mac, ip, vlan, interface, switch)
-                       values (?, ?, ?, ?, ?)'''
-
-    conn = sqlite3.connect(db_file)
+def add_dhcp_data(db_file, dhcp_snoop_filelist):
 
     print('Добавляю данные в таблицу dhcp...')
 
-    for row in result:
+    new_data = parse_dhcp_snoop_files(dhcp_snoop_filelist)
+
+    conn = sqlite3.connect(db_file)
+    conn.row_factory = sqlite3.Row
+
+    #делаем все записи в БД active = 0
+    conn.execute('update dhcp set active = 0')
+
+    #Делаем реплейс для всех новых
+    query = '''replace into dhcp (mac, ip, vlan, interface, switch, active)
+                       values (?, ?, ?, ?, ?, ?)'''
+
+    for row in new_data:
         try:
             with conn:
                 conn.execute(query, row)
         except sqlite3.IntegrityError as e:
-            print(f'При добавлении данных: {row} Возникла ошибка: ', e)
+            print(f'Придобавлении данных: {row} Возникла ошибка: ', e)
 
     conn.close()
+
+def check_data(macs_list, mac):
+    '''
+    Функция ищет совпадение в МАС в MACs_list,
+    MAC есть = True
+    МАС'а нет = False
+    '''
+    conn = sqlite3.connect(db_file)
+
+    query = 'select mac from dhcp where mac = ?'
+    result = conn.execute(query, (mac,))
+    if result.fetchall(): #есть совпадение
+        return True
+    else:
+        return False
+
 
 if __name__ == '__main__':
 
     db_filename = 'dhcp_snooping.db'
     schema_filename = 'dhcp_snooping_schema.sql'
     switches_filename = 'switches.yml'
-    dhch_snoop_files = glob.glob('*_dhcp_snooping.txt')
+    dhch_snoop_files = glob.glob('new_data/*_dhcp_snooping.txt')
     #print(dhch_snoop_files)
 
     if os.path.isfile(db_filename):
-        add_swithces(db_filename, switches_filename)
+        # add_swithces(db_filename, switches_filename)
 
         add_dhcp_data(db_filename, dhch_snoop_files)
+        # mac = '00:09:BB:3D:D6:58'
+        # res = check_data(db_filename, mac)
+        # print(res)
 
     else:
         print('База данных не существует. Перед добавлением данных, ее надо создать')
