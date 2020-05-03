@@ -13,6 +13,7 @@ import sqlite3
 import sys
 from tabulate import tabulate
 
+
 def get_all(db_file):
     conn = sqlite3.connect(db_file)
 
@@ -33,8 +34,8 @@ def get_all(db_file):
         print('\nНеактивные записи:')
         print(for_print)
 
-
     conn.close()
+
 
 def get_cust(db_file, key, value):
     query_dict = {
@@ -72,8 +73,9 @@ def get_cust(db_file, key, value):
 
         conn.close()
 
+
 def mngt(db_file):
-    if not sys.argv[1:]: #нет аргументов
+    if not sys.argv[1:]:  # нет аргументов
         get_all(db_file)
         # get_cust(db_file, 'all', 1)
     elif len(sys.argv[1:]) == 2:
