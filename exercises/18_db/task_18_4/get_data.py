@@ -44,8 +44,6 @@ def get_cust(db_file, key, value):
         'ip': 'select * from dhcp where ip = ? and active = ?',
         'interface': 'select * from dhcp where interface = ? and active = ?',
         'switch': 'select * from dhcp where switch = ? and active = ?'
-        # ,
-        # 'all': 'select * from dhcp where active = ?'
     }
 
     keys = query_dict.keys()

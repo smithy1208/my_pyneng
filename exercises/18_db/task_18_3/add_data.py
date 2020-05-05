@@ -17,7 +17,7 @@ import os.path
 import yaml
 import re
 import glob
-from tabulate import tabulate
+
 
 def add_swithces(db_file, switches_file_yml):
     '''
@@ -41,6 +41,7 @@ def add_swithces(db_file, switches_file_yml):
 
     conn.close()
 
+
 def parse_dhcp_snoop_files(dhcp_snoop_filelist):
     regex = re.compile('(\S+) +(\S+) +\d+ +\S+ +(\d+) +(\S+)')
     result = []
@@ -56,8 +57,8 @@ def parse_dhcp_snoop_files(dhcp_snoop_filelist):
                     result.append(tuple(row))
     return result
 
-def add_dhcp_data(db_file, dhcp_snoop_filelist):
 
+def add_dhcp_data(db_file, dhcp_snoop_filelist):
     print('Добавляю данные в таблицу dhcp...')
 
     new_data = parse_dhcp_snoop_files(dhcp_snoop_filelist)
@@ -65,10 +66,10 @@ def add_dhcp_data(db_file, dhcp_snoop_filelist):
     conn = sqlite3.connect(db_file)
     conn.row_factory = sqlite3.Row
 
-    #делаем все записи в БД active = 0
+    # делаем все записи в БД active = 0
     conn.execute('update dhcp set active = 0')
 
-    #Делаем реплейс для всех новых
+    # Делаем реплейс для всех новых
     query = '''replace into dhcp (mac, ip, vlan, interface, switch, active)
                        values (?, ?, ?, ?, ?, ?)'''
 
@@ -81,6 +82,7 @@ def add_dhcp_data(db_file, dhcp_snoop_filelist):
 
     conn.close()
 
+
 def check_data(macs_list, mac):
     '''
     Функция ищет совпадение в МАС в MACs_list,
@@ -91,7 +93,7 @@ def check_data(macs_list, mac):
 
     query = 'select mac from dhcp where mac = ?'
     result = conn.execute(query, (mac,))
-    if result.fetchall(): #есть совпадение
+    if result.fetchall():  # есть совпадение
         return True
     else:
         return False
@@ -103,7 +105,7 @@ if __name__ == '__main__':
     schema_filename = 'dhcp_snooping_schema.sql'
     switches_filename = 'switches.yml'
     dhch_snoop_files = glob.glob('new_data/*_dhcp_snooping.txt')
-    #print(dhch_snoop_files)
+    # print(dhch_snoop_files)
 
     if os.path.isfile(db_filename):
         # add_swithces(db_filename, switches_filename)

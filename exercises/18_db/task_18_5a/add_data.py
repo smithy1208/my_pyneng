@@ -17,7 +17,6 @@ import os.path
 import yaml
 import re
 import glob
-from tabulate import tabulate
 from time import sleep
 from datetime import timedelta, datetime
 
@@ -90,10 +89,11 @@ def add_dhcp_data(db_file, dhcp_snoop_filelist):
 
     conn.close()
 
+
 def delete_old_data(conn, old_data):
     query = 'delete from dhcp where last_active < ?'
     with conn:
-        conn.execute(query, (old_data, ))
+        conn.execute(query, (old_data,))
     print(f'Удалены данные старше чем {old_data}')
 
 
@@ -106,14 +106,12 @@ if __name__ == '__main__':
     dhch_snoop_files1 = glob.glob('new_data/*_dhcp_snooping.txt')
     # print(dhch_snoop_files)
 
-
     if os.path.isfile(db_filename):
         # add_swithces(db_filename, switches_filename)
 
         # add_dhcp_data(db_filename, dhch_snoop_files0)
         # sleep(10)
         add_dhcp_data(db_filename, dhch_snoop_files1)
-
 
         # mac = '00:09:BB:3D:D6:58'
         # res = check_data(db_filename, mac)

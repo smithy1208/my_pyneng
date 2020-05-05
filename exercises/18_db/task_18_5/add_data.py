@@ -21,8 +21,6 @@ from tabulate import tabulate
 from time import sleep
 
 
-# import datetime
-
 def add_swithces(db_file, switches_file_yml):
     '''
     Из файла switches_file_yml загружаем банные в БД
@@ -118,7 +116,6 @@ if __name__ == '__main__':
         add_dhcp_data(db_filename, dhch_snoop_files0)
         sleep(10)
         add_dhcp_data(db_filename, dhch_snoop_files1)
-
 
         # mac = '00:09:BB:3D:D6:58'
         # res = check_data(db_filename, mac)

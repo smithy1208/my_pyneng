@@ -18,6 +18,7 @@ import yaml
 import re
 import glob
 
+
 def add_swithces(db_file, switches_file_yml):
     '''
     Из файла switches_file_yml загружаем банные в БД
@@ -40,6 +41,7 @@ def add_swithces(db_file, switches_file_yml):
 
     conn.close()
 
+
 def add_dhcp_data(db_file, dhch_snoop_filelist):
     regex = re.compile('(\S+) +(\S+) +\d+ +\S+ +(\d+) +(\S+)')
 
@@ -47,7 +49,7 @@ def add_dhcp_data(db_file, dhch_snoop_filelist):
 
     for file in dhch_snoop_filelist:
         switch = re.match(r'(\w+?)_.*', file).group(1)
-        #print(host)
+        # print(host)
         with open(file) as f:
             for line in f:
                 match = regex.match(line)
@@ -55,8 +57,7 @@ def add_dhcp_data(db_file, dhch_snoop_filelist):
                     row = list(match.groups())
                     row.append(switch)
                     result.append(tuple(row))
-    #print(result)
-
+    # print(result)
 
     query = '''insert into dhcp (mac, ip, vlan, interface, switch)
                        values (?, ?, ?, ?, ?)'''
@@ -74,13 +75,14 @@ def add_dhcp_data(db_file, dhch_snoop_filelist):
 
     conn.close()
 
+
 if __name__ == '__main__':
 
     db_filename = 'dhcp_snooping.db'
     schema_filename = 'dhcp_snooping_schema.sql'
     switches_filename = 'switches.yml'
     dhch_snoop_files = glob.glob('*_dhcp_snooping.txt')
-    #print(dhch_snoop_files)
+    # print(dhch_snoop_files)
 
     if os.path.isfile(db_filename):
         add_swithces(db_filename, switches_filename)
