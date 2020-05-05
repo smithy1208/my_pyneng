@@ -19,9 +19,8 @@ import re
 import glob
 from tabulate import tabulate
 from time import sleep
+from datetime import timedelta, datetime
 
-
-# import datetime
 
 def add_swithces(db_file, switches_file_yml):
     '''
@@ -73,6 +72,11 @@ def add_dhcp_data(db_file, dhcp_snoop_filelist):
     # делаем все записи в БД active = 0
     conn.execute('update dhcp set active = 0')
 
+    # Удаляем все старые записи в БД
+    now = datetime.today().replace(microsecond=0)
+    week_ago = str(now - timedelta(days=7))
+    delete_old_data(conn, week_ago)
+
     # Делаем реплейс для всех новых
     query = '''replace into dhcp (mac, ip, vlan, interface, switch, active, last_active)
                        values (?, ?, ?, ?, ?, ?, datetime('now', 'localtime'))'''
@@ -86,21 +90,11 @@ def add_dhcp_data(db_file, dhcp_snoop_filelist):
 
     conn.close()
 
-
-# def check_data(macs_list, mac):
-#     '''
-#     Функция ищет совпадение в МАС в MACs_list,
-#     MAC есть = True
-#     МАС'а нет = False
-#     '''
-#     conn = sqlite3.connect(db_file)
-#
-#     query = 'select mac from dhcp where mac = ?'
-#     result = conn.execute(query, (mac,))
-#     if result.fetchall():  # есть совпадение
-#         return True
-#     else:
-#         return False
+def delete_old_data(conn, old_data):
+    query = 'delete from dhcp where last_active < ?'
+    with conn:
+        conn.execute(query, (old_data, ))
+    print(f'Удалены данные старше чем {old_data}')
 
 
 if __name__ == '__main__':
@@ -112,11 +106,12 @@ if __name__ == '__main__':
     dhch_snoop_files1 = glob.glob('new_data/*_dhcp_snooping.txt')
     # print(dhch_snoop_files)
 
+
     if os.path.isfile(db_filename):
         # add_swithces(db_filename, switches_filename)
 
-        add_dhcp_data(db_filename, dhch_snoop_files0)
-        sleep(10)
+        # add_dhcp_data(db_filename, dhch_snoop_files0)
+        # sleep(10)
         add_dhcp_data(db_filename, dhch_snoop_files1)
 
 

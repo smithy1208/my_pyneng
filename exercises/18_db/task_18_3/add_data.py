@@ -45,7 +45,7 @@ def parse_dhcp_snoop_files(dhcp_snoop_filelist):
     regex = re.compile('(\S+) +(\S+) +\d+ +\S+ +(\d+) +(\S+)')
     result = []
     for file in dhcp_snoop_filelist:
-        switch = re.match(r'.+/(\w+?)_.*', file).group(1)
+        switch = re.match(r'(?:.+/)?(\w+?)_.*', file).group(1)
         with open(file) as f:
             for line in f:
                 match = regex.match(line)
